@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estes Park Ride - Payment</title>
+    <meta name="description"
+        content="Pay your Estes Park local ride quickly and securely via Venmo, Cash App, or Zelle.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =============================================
+           GENEL AYARLAR
+           ============================================= */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.85), rgba(0, 0, 0, 0.92)),
+                url('bg.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        /* =============================================
+           ANA KAPSAYICI (Glassmorphism Kart)
+           ============================================= */
+        .container {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            padding: 40px 28px 36px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =============================================
+           PROFİL FOTOĞRAFI
+           ============================================= */
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05);
+        }
+
+        /* =============================================
+           İSİM VE BAŞLIK
+           ============================================= */
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #c0c8d8;
+            font-weight: 400;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .subtitle i {
+            color: #7dd3a8;
+        }
+
+        .vehicle-info {
+            font-size: 14px;
+            color: #9ba4b5;
+            font-weight: 400;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .vehicle-info i {
+            color: #7dd3a8;
+        }
+
+        /* =============================================
+           BUTON STİLLERİ
+           ============================================= */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 14px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn i {
+            font-size: 20px;
+        }
+
+        /* Uygulama Renkleri */
+        .venmo {
+            background: linear-gradient(135deg, #008CFF, #0070cc);
+        }
+
+        .cashapp {
+            background: linear-gradient(135deg, #00D632, #00b82b);
+        }
+
+        .paypal {
+            background: linear-gradient(135deg, #0070ba, #003087);
+        }
+
+        .zelle {
+            background: linear-gradient(135deg, #7418DB, #5a10b0);
+        }
+
+        .contact {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 24px;
+            /* Grid ile arasında boşluk */
+        }
+
+        .contact:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        /* =============================================
+           ÖDEME BUTONLARI İÇİN GRID (Kare Kare)
+           ============================================= */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            width: 100%;
+            /* Kutuları küçültmek için yanlardan iç boşluk verdik */
+            padding: 0 24px;
+        }
+
+        .payment-grid .btn {
+            margin-bottom: 0;
+            flex-direction: column;
+            justify-content: center;
+            aspect-ratio: 1 / 1;
+            /* Tam kare yapar */
+            padding: 10px;
+            border-radius: 18px;
+            /* Daha ufak kutu için ovallik hafif kısıldı */
+            gap: 8px;
+            /* İkon ve yazı arasındaki boşluk biraz kısıldı */
+        }
+
+        .payment-grid .btn i {
+            font-size: 28px;
+            /* Kutularla orantılı olarak ikonlar ufaldı */
+        }
+
+        .payment-grid .btn span {
+            font-size: 13px;
+            /* Yazı fontu ufaldı */
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* =============================================
+           TOAST BİLDİRİMİ
+           ============================================= */
+        #toast {
+            visibility: hidden;
+            min-width: 280px;
+            background: linear-gradient(135deg, #4CAF50, #2e9e33);
+            color: #fff;
+            text-align: center;
+            border-radius: 14px;
+            padding: 16px 24px;
+            position: fixed;
+            z-index: 100;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.35s ease, visibility 0.35s ease, bottom 0.35s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 40px;
+        }
+
+        /* =============================================
+           FOOTER
+           ============================================= */
+        .footer {
+            margin-top: 28px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.3px;
+        }
+
+        /* =============================================
+           STAGGER ANİMASYON (Sırayla belirme)
+           ============================================= */
+        #btn-contact {
+            animation: fadeInUp 0.5s ease-out 0.1s both;
+        }
+
+        #btn-venmo {
+            animation: fadeInUp 0.5s ease-out 0.2s both;
+        }
+
+        #btn-cashapp {
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+
+        #btn-paypal {
+            animation: fadeInUp 0.5s ease-out 0.4s both;
+        }
+
+        #btn-zelle {
+            animation: fadeInUp 0.5s ease-out 0.5s both;
+        }
+
+        /* =============================================
+           MODALLAR
+           ============================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            background: #1e1e2e;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 32px 24px 24px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .modal h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .modal .modal-subtitle {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 24px;
+        }
+
+        .zelle-qr-container {
+            background: #fff;
+            padding: 12px;
+            border-radius: 16px;
+            display: inline-block;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .zelle-qr-container.zoomed {
+            transform: scale(2.2);
+            position: relative;
+            z-index: 501;
+            box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.85);
+        }
+
+        .zelle-qr {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .zelle-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .zelle-option:hover {
+            background: rgba(116, 24, 219, 0.15);
+            border-color: rgba(116, 24, 219, 0.4);
+        }
+
+        .zelle-option .zelle-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .zelle-option .zelle-left i {
+            font-size: 18px;
+            color: #7418DB;
+            width: 24px;
+            text-align: center;
+        }
+
+        .zelle-option .zelle-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .zelle-option .zelle-value {
+            font-size: 15px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .zelle-option .copy-icon {
+            font-size: 16px;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .zelle-option:hover .copy-icon {
+            color: #7418DB;
+        }
+
+        .zelle-option.copied {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .zelle-option.copied .copy-icon {
+            color: #4CAF50;
+        }
+
+        .modal-close {
+            margin-top: 8px;
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #aaa;
+            padding: 10px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .contact-option:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .contact-option .zelle-left i {
+            color: #fff;
+        }
+
+        .contact-option .copy-icon {
+            color: #888;
+        }
+
+        .contact-option:hover .copy-icon {
+            color: #fff;
+        }
+
+        /* =============================================
+           PLAKA GÖRSELİ
+           ============================================= */
+        .plate-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: -15px;
+            z-index: 10;
+            position: relative;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .plate-img {
+            width: 200px;
+            height: 100px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 8px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            transform: rotate(-3deg);
+            transition: transform 0.3s ease;
+        }
+
+        .plate-img:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- PLAKA GÖRSELİ -->
+        <div class="plate-container">
+            <img src="plate.png" alt="Colorado License Plate" class="plate-img">
+        </div>
+
+        <img src="mezz.png" alt="MEZZ - Estes Park Driver" class="profile-img" style="position: relative; z-index: 5;">
+
+        <h1>MEZ</h1>
+        <p class="subtitle">
+            <i class="fa-solid fa-mountain-sun"></i> Estes Park Local Ride
+        </p>
+        <p class="vehicle-info">
+            <i class="fa-solid fa-car"></i> Premium Comfort SUV
+        </p>
+
+        <!-- YUKARI TAŞINAN CONTACT BUTONU -->
+        <button onclick="openContactModal()" class="btn contact" id="btn-contact">
+            <i class="fa-solid fa-phone"></i> Call / Text Me
+        </button>
+
+        <!-- KARE KARE (GRID) ÖDEME BUTONLARI -->
+        <div class="payment-grid">
+            <a href="https://venmo.com/u/Mert-Zurnali" target="_blank" rel="noopener noreferrer" class="btn venmo"
+                id="btn-venmo">
+                <i class="fa-brands fa-vimeo-v"></i> <span>Venmo</span>
+            </a>
+
+            <a href="https://cash.app/$coloradomez/" class="btn cashapp" id="btn-cashapp">
+                <i class="fa-solid fa-dollar-sign"></i> <span>Cash App</span>
+            </a>
+
+            <a href="https://paypal.me/mertzurnali" target="_blank" rel="noopener noreferrer" class="btn paypal"
+                id="btn-paypal">
+                <i class="fa-brands fa-paypal"></i> <span>PayPal</span>
+            </a>
+
+            <button onclick="openZelleModal()" class="btn zelle" id="btn-zelle">
+                <i class="fa-solid fa-building-columns"></i> <span>Zelle</span>
+            </button>
+        </div>
+
+        <div class="footer">
+            Safe travels in the Rockies! 🏔️
+        </div>
+    </div>
+
+
+    <!-- ZELLE MODAL -->
+    <div class="modal-overlay" id="zelleModal" onclick="closeZelleModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <h2><i class="fa-solid fa-building-columns" style="color: #7418DB; margin-right: 8px;"></i>Zelle</h2>
+            <p class="modal-subtitle">Scan QR or tap to copy details</p>
+
+            <div class="zelle-qr-container" id="qrContainer" onclick="toggleQRZoom()" title="Tap to zoom">
+                <img src="zelle.png" alt="Zelle QR Code" class="zelle-qr">
+            </div>
+
+            <div class="zelle-option" onclick="copyZelleInfo(this, '+1 (970) 689-5606')" id="zelle-phone">
+                <div class="zelle-left">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <div class="zelle-label">Phone</div>
+                        <div class="zelle-value">+1 (970) 689-5606</div>
+                    </div>
+                </div>
+                <i class="fa-regular fa-copy copy-icon"></i>
+            </div>
+
+            <div class="zelle-option" onclick="copyZelleInfo(this, 'merteren.2001@gmail.com')" id="zelle-email">
+                <div class="zelle-left">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <div class="zelle-label">Email</div>
+                        <div class="zelle-value">merteren.2001@gmail.com</div>
+                    </div>
+                </div>
+                <i class="fa-regular fa-copy copy-icon"></i>
+            </div>
+
+            <button class="modal-close" onclick="closeZelleModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- CONTACT MODAL -->
+    <div class="modal-overlay" id="contactModal" onclick="closeContactModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <h2><i class="fa-solid fa-phone" style="color: #fff; margin-right: 8px;"></i>Contact</h2>
+            <p class="modal-subtitle">Choose how you'd like to reach me</p>
+
+            <a href="tel:+19706895606" class="zelle-option contact-option" id="contact-call"
+                style="text-decoration:none; color:inherit;">
+                <div class="zelle-left">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <div class="zelle-label">Call</div>
+                        <div class="zelle-value">+1 (970) 689-5606</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right copy-icon"></i>
+            </a>
+
+            <a href="sms:+19706895606" class="zelle-option contact-option" id="contact-text"
+                style="text-decoration:none; color:inherit;">
+                <div class="zelle-left">
+                    <i class="fa-solid fa-message"></i>
+                    <div>
+                        <div class="zelle-label">Text</div>
+                        <div class="zelle-value">+1 (970) 689-5606</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right copy-icon"></i>
+            </a>
+
+            <a href="https://wa.me/19706895606" target="_blank" rel="noopener noreferrer"
+                class="zelle-option contact-option" id="contact-whatsapp" style="text-decoration:none; color:inherit;">
+                <div class="zelle-left">
+                    <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 20px;"></i>
+                    <div>
+                        <div class="zelle-label">WhatsApp</div>
+                        <div class="zelle-value">+1 (970) 689-5606</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right copy-icon"></i>
+            </a>
+
+            <button class="modal-close" onclick="closeContactModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Toast Bildirimi -->
+    <div id="toast">
+        <i class="fa-solid fa-circle-check"></i> Copied! Open your bank app.
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        function toggleQRZoom() {
+            var container = document.getElementById('qrContainer');
+            if (container) container.classList.toggle('zoomed');
+        }
+
+        function openZelleModal() { document.getElementById('zelleModal').classList.add('active'); }
+        function closeZelleModal(e) {
+            if (!e || e.target === e.currentTarget) {
+                document.getElementById('zelleModal').classList.remove('active');
+                var qrContainer = document.getElementById('qrContainer');
+                if (qrContainer) qrContainer.classList.remove('zoomed');
+            }
+        }
+
+        function copyZelleInfo(element, info) {
+            navigator.clipboard.writeText(info).then(function () {
+                element.classList.add('copied');
+                var icon = element.querySelector('.copy-icon');
+                icon.className = 'fa-solid fa-circle-check copy-icon';
+                var toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(function () { toast.classList.remove('show'); }, 3000);
+                setTimeout(function () {
+                    element.classList.remove('copied');
+                    icon.className = 'fa-regular fa-copy copy-icon';
+                }, 2500);
+            }, function () {
+                alert('Copy failed. Please manually save: ' + info);
+            });
+        }
+
+        function openContactModal() { document.getElementById('contactModal').classList.add('active'); }
+        function closeContactModal(e) {
+            if (!e || e.target === e.currentTarget) {
+                document.getElementById('contactModal').classList.remove('active');
+            }
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeZelleModal();
+                closeContactModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
